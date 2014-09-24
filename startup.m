@@ -28,4 +28,9 @@ else
 end
 addpath(fullfile(curdir,'experiments'));
 addpath(fullfile(curdir,'imdb'));
-fprintf('R-CNN startup done\n');
+
+mkdir_if_missing(fullfile(curdir, 'bin'));
+mkdir_if_missing(fullfile(curdir, 'cachedir'));
+mkdir_if_missing(fullfile(curdir, 'feat_cache'));
+
+fprintf('SPP_net startup done\n');
