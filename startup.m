@@ -32,5 +32,6 @@ addpath(fullfile(curdir,'imdb'));
 mkdir_if_missing(fullfile(curdir, 'bin'));
 mkdir_if_missing(fullfile(curdir, 'cachedir'));
 mkdir_if_missing(fullfile(curdir, 'feat_cache'));
+mkdir_if_missing(fullfile(curdir, 'imdb', 'cache'));
 
 fprintf('SPP_net startup done\n');
