@@ -1,0 +1,1 @@
+ mex -O COMPFLAGS="$COMPFLAGS /openmp" -largeArrayDims train.cpp linear_model_matlab.cpp ../linear.cpp ../tron.cpp "../blas/*.c"
