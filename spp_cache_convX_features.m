@@ -64,7 +64,7 @@ conf = spp_config();
 
 % Log feature extraction
 timestamp = datestr(datevec(now()), 'yyyymmdd_HHMMSS');
-diary_file = [opts.output_dir 'rcnn_train_' opts.cache '_'  timestamp '.txt'];
+diary_file = [opts.output_dir 'spp_train_' opts.cache '_'  timestamp '.txt'];
 diary(diary_file);
 fprintf('Logging output in %s\n', diary_file);
 

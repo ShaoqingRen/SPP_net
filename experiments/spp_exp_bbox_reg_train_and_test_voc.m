@@ -23,7 +23,7 @@ if ~exist('opts', 'var')
     opts.cache_name             = 'Zeiler_conv5_ft(5s_flip)_fc7';
 end
 
-% load the rcnn_model trained by rcnn_exp_train_and_test()
+% load the spp_model trained by spp_exp_train_and_test()
 imdbs_name = cell2mat(cellfun(@(x) x.name, opts.imdb_train, 'UniformOutput', false));
 conf = spp_config('sub_dir', fullfile(opts.cache_name, imdbs_name));
 ld = load([conf.cache_dir 'spp_model']);

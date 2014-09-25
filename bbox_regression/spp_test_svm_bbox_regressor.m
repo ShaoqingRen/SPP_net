@@ -1,6 +1,6 @@
-function res = spp_test_svm_bbox_regressor(rcnn_model, imdb, roidb, bbox_reg, feat_cache, suffix, fast)
-% res = spp_test_svm_bbox_regressor(rcnn_model, imdb, roidb, bbox_reg, feat_cache, suffix, fast)
-%   Compute test results using the trained rcnn_model on the
+function res = spp_test_svm_bbox_regressor(spp_model, imdb, roidb, bbox_reg, feat_cache, suffix, fast)
+% res = spp_test_svm_bbox_regressor(spp_model, imdb, roidb, bbox_reg, feat_cache, suffix, fast)
+%   Compute test results using the trained spp_model on the
 %   image database specified by imdb. Results are saved
 %   with an optional suffix.
 %
@@ -32,14 +32,14 @@ end
 
 t_start = tic();
 
-conf = rcnn_config('sub_dir', fullfile(rcnn_model.cache_name, imdb.name));
+conf = spp_config('sub_dir', fullfile(spp_model.cache_name, imdb.name));
 image_ids = imdb.image_ids;
 
 % assume they are all the same
-feat_opts = rcnn_model.training_opts;
+feat_opts = spp_model.training_opts;
 bbox_feat_opts = bbox_reg.training_opts;
 feat_opts.feat_cache = feat_cache;
-num_classes = length(rcnn_model.classes);
+num_classes = length(spp_model.classes);
 rois = roidb.rois;
 
 if ~exist('suffix', 'var') || isempty(suffix)
@@ -53,7 +53,7 @@ bbox_reg = Trans_bbox_reg(bbox_reg, conf.use_gpu);
 try
   aboxes = cell(num_classes, 1);
   for i = 1:num_classes
-    load([conf.cache_dir rcnn_model.classes{i} '_boxes_' imdb.name suffix]);
+    load([conf.cache_dir spp_model.classes{i} '_boxes_' imdb.name suffix]);
     aboxes{i} = boxes;
   end
 catch
@@ -73,10 +73,10 @@ catch
   thresh = -1.5*ones(num_classes, 1);
   box_counts = zeros(num_classes, 1);
 
-  if ~isfield(rcnn_model, 'folds')
+  if ~isfield(spp_model, 'folds')
     folds{1} = 1:length(image_ids);
   else
-    folds = rcnn_model.folds;
+    folds = spp_model.folds;
   end
 
   count = 0;
@@ -86,22 +86,22 @@ catch
       fprintf('%s: test (%s) %d/%d ', procid(), imdb.name, count, length(image_ids));
       th = tic;
       d = rois(i);
-      feat = rcnn_load_cached_poolX_features_spm(feat_opts.feat_cache, ...
+      feat = spp_load_cached_poolX_features_spm(feat_opts.feat_cache, ...
           imdb.name, image_ids{i}, d.boxes);
       if isempty(feat)
         continue;
       end
-      d.feat = rcnn_poolX_to_fcX(feat, feat_opts.layer, rcnn_model, conf.use_gpu);
-      d.feat = rcnn_scale_features(d.feat, feat_opts.feat_norm_mean);
+      d.feat = spp_poolX_to_fcX(feat, feat_opts.layer, spp_model, conf.use_gpu);
+      d.feat = spp_scale_features(d.feat, feat_opts.feat_norm_mean);
       
-      d.feat_bbox = rcnn_poolX_to_fcX(feat, bbox_feat_opts.layer, rcnn_model, conf.use_gpu);
-      d.feat_bbox = rcnn_scale_features(d.feat_bbox, bbox_feat_opts.feat_norm_mean);
+      d.feat_bbox = spp_poolX_to_fcX(feat, bbox_feat_opts.layer, spp_model, conf.use_gpu);
+      d.feat_bbox = spp_scale_features(d.feat_bbox, bbox_feat_opts.feat_norm_mean);
       
-      zs = bsxfun(@plus, rcnn_model.detectors(f).W * d.feat, rcnn_model.detectors(f).B)';
+      zs = bsxfun(@plus, spp_model.detectors(f).W * d.feat, spp_model.detectors(f).B)';
       
       % regression all boxes for all classes, faster though more boxes
       boxes = d.boxes;
-      bboxes = rcnn_predict_bbox_regressor_batch_spm(bbox_reg, d.feat_bbox, boxes, conf.use_gpu);
+      bboxes = spp_predict_bbox_regressor_batch_spm(bbox_reg, d.feat_bbox, boxes, conf.use_gpu);
       
       for j = 1:num_classes
         boxes = d.boxes;
@@ -128,7 +128,7 @@ catch
           scores = boxes(:,end);
           boxes = boxes(:,1:4);
           assert(sum(sum(abs(d.boxes(I,:) - boxes))) == 0);
-%           boxes = rcnn_predict_bbox_regressor_spm(bbox_reg.models{j}, d.feat_bbox(:,I), boxes, conf.use_gpu);
+%           boxes = spp_predict_bbox_regressor_spm(bbox_reg.models{j}, d.feat_bbox(:,I), boxes, conf.use_gpu);
           boxes = bboxes{j}(I, :);
          
           boxes(:,1) = max(boxes(:,1), 1);
@@ -155,7 +155,7 @@ catch
        keep_top_k(aboxes{i}, box_inds{i}, length(image_ids), ...
           max_per_set, thresh(i));
 
-    save_file = [conf.cache_dir rcnn_model.classes{i} '_boxes_' imdb.name suffix];
+    save_file = [conf.cache_dir spp_model.classes{i} '_boxes_' imdb.name suffix];
     boxes = aboxes{i};
     inds = box_inds{i};
     save(save_file, 'boxes', 'inds');
@@ -163,7 +163,7 @@ catch
   end
 end
 
-fprintf('rcnn_test_spm in %f seconds.\n', toc(t_start));
+fprintf('spp_test_spm in %f seconds.\n', toc(t_start));
 
 % ------------------------------------------------------------------------
 % Peform AP evaluation
@@ -172,18 +172,18 @@ fprintf('rcnn_test_spm in %f seconds.\n', toc(t_start));
 if isequal(imdb.eval_func, @imdb_eval_voc)
     if fast
         parfor model_ind = 1:num_classes
-          cls = rcnn_model.classes{model_ind};
-          res(model_ind) = imdb.eval_func(cls, aboxes{model_ind}, imdb, rcnn_model.cache_name, suffix, fast);
+          cls = spp_model.classes{model_ind};
+          res(model_ind) = imdb.eval_func(cls, aboxes{model_ind}, imdb, spp_model.cache_name, suffix, fast);
         end
     else
         for model_ind = 1:num_classes
-          cls = rcnn_model.classes{model_ind};
-          res(model_ind) = imdb.eval_func(cls, aboxes{model_ind}, imdb, rcnn_model.cache_name, suffix, fast);
+          cls = spp_model.classes{model_ind};
+          res(model_ind) = imdb.eval_func(cls, aboxes{model_ind}, imdb, spp_model.cache_name, suffix, fast);
         end
     end
 else
 % ilsvrc
-    res = imdb.eval_func(aboxes, imdb, rcnn_model.cache_name, suffix, fast);
+    res = imdb.eval_func(aboxes, imdb, spp_model.cache_name, suffix, fast);
 end
 
 if ~isempty(res)

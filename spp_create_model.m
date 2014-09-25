@@ -34,7 +34,6 @@ detectors.W = [];
 detectors.B = [];
 detectors.nms_thresholds = [];
 
-% rcnn model wraps the convnet and detectors
 spp_model.cnn = cnn;
 spp_model.cache_name = cache_name;
 spp_model.detectors = detectors;

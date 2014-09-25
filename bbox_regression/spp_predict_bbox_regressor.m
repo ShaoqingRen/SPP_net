@@ -6,7 +6,7 @@ function pred_boxes = ...
 %   bounding boxes.
 %   
 %   Inputs
-%   model     Bounding box regressor from rcnn_train_bbox_regressor.m
+%   model     Bounding box regressor from spp_train_bbox_regressor.m
 %   feat      Input feature vectors
 %   ex_boxes  Input bounding boxes
 %
