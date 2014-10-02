@@ -3,6 +3,15 @@
 #include <algorithm>
 #include <ctime>
 #include <vector>
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+
+#ifdef WIN32
+#else
+#include "xmmintrin.h"
+#endif
+
 using std::vector;
 
 // usage:
@@ -131,7 +140,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	float* pooled = (float*)mxGetData(plhs[0]);
 	memset((void*)pooled, 0, sizeof(float) * num_boxes * dim_pooled);
 
-	float* pooled_cache = (float*)_aligned_malloc(dim_pooled * sizeof(float), 16);
+	float* pooled_cache = (float*)malloc(dim_pooled * sizeof(float) ); //, 16);
 	if (pooled_cache == NULL)
 		mexErrMsgTxt("malloc error.");
 
@@ -215,7 +224,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		}
 	}//i
 
-	_aligned_free(pooled_cache);
+	free(pooled_cache);
 	delete[] boxes_norm;
 
 }
