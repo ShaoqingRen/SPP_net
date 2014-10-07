@@ -130,9 +130,8 @@ for i = opts.start:opts.end
         d.feat = spp_features_convX(im, opts.spm_im_size, feat_cache, conf.use_gpu);
         
         fprintf(' [features: %.3fs]\n', toc(th));
-  catch
-        fprintf('Warrning: Cannot read %s.\n', imdb.image_at(i));
-
+  catch err
+        fprintf(' extract feature error : %s \n', err.message);
   end
         
   th = tic;
