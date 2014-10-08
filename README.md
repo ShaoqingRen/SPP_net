@@ -32,7 +32,7 @@ SPP_net is released under the Simplified BSD License for non-commercial use (ref
 0. **Prerequisites**
   0. MATLAB (tested with 2014a on 64-bit Windows)
   0. Caffe's prerequisites (some function is based our modified caffe, so we provied compiled caffe mex and cpp file for mex wapper), run `external\fetch_caffe_mex_5_5.m` to download
-  1. News: a caffe version which supports spp mex is provided in https://github.com/ShaoqingRen/caffe, this version is forked from [BVLC/caffe](https://github.com/BVLC/caffe) on Oct. 1, 2014. The Zeiler CNN network with this new version is shared at https://onedrive.live.com/download?resid=4006CBB8476FF777!9723&authkey=!APTWXLD_P7UN6P0&ithint=file%2czip
+  1. News: a caffe version which supports spp mex is provided in https://github.com/ShaoqingRen/caffe, this version is forked from [BVLC/caffe](https://github.com/BVLC/caffe) on Oct. 1, 2014. The Zeiler CNN network with this new version is shared in [OneDrive](https://onedrive.live.com/download?resid=4006CBB8476FF777!9723&authkey=!APTWXLD_P7UN6P0&ithint=file%2czip)
 0. **Install SPP_net**
   0. Get the SPP_net source code by cloning the repository: `git clone https://github.com/ShaoqingRen/SPP_net.git`
   0. Now change into the SPP_net source code directory
