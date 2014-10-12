@@ -2,9 +2,9 @@ function spp_exp_cache_features_voc(chunk, opts)
 
 % -------------------- CONFIG --------------------
 if ~exist('opts', 'var')
-    opts.net_file        = fullfile(pwd, 'data\cnn_model\Zeiler_conv5\Zeiler_conv5');
-    opts.net_def_file    = fullfile(pwd, 'data\cnn_model\Zeiler_conv5\Zeiler_spm_scale224_test_conv5.prototxt');
-    opts.spp_params_def  = fullfile(pwd, 'data\cnn_model\Zeiler_conv5\spp_config');
+    opts.net_file        = fullfile(pwd, 'data','cnn_model','Zeiler_conv5','Zeiler_conv5');
+    opts.net_def_file    = fullfile(pwd, 'data','cnn_model','Zeiler_conv5','Zeiler_spm_scale224_test_conv5.prototxt');
+    opts.spp_params_def  = fullfile(pwd, 'data','cnn_model','Zeiler_conv5','spp_config');
 
     opts.flip                   = false;
     opts.feat_cache_copy_from   = 'Zeiler_conv5_back';
