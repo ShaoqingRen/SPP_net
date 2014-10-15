@@ -22,6 +22,11 @@ using std::vector;
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
+      if (nrhs<5) {
+	  mexPrintf("spm_pool_caffe_mex: needs at least 4 input arguments!\n");
+	  mexPrintf("spm_pool_caffe_mex: compile date: %s %s\n", __DATE__ , __TIME__ );
+	  return;
+      }
 	///// get input arguments
 	if (!mxIsCell(prhs[0]))
 		mexErrMsgTxt("feats must be in cell");
@@ -34,6 +39,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	vector<int> rsp_widths(feats_num), rsp_heights(feats_num);
 	vector<const float *> feats(feats_num);
 
+	//mexPrintf("spm_pool_caffe_mex: feats_num %d\n feats_num);
 	for (int i = 0; i < feats_num; ++i)
 	{
 		mxArray * mxFeats = mxGetCell(prhs[0], i);
@@ -124,7 +130,11 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 			y0_norm = (y0_norm + y1_norm) / 2;
 			y1_norm = y0_norm;
 		}
-
+		
+		if(best_feat>=rsp_heights.size() ) {
+		  mexPrintf("spm_pool_caffe_mex: error: box %d: best_feat %d rsp_heights.size() %d\n", i, best_feat, rsp_heights.size() );
+		  return;
+		}
 		box_norm[0] = std::min(rsp_heights[best_feat], std::max(1, y0_norm)); // top // must not change
 		box_norm[2] = std::min(rsp_heights[best_feat], std::max(1, y1_norm)); // bottom // must not change
 
@@ -228,3 +238,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	delete[] boxes_norm;
 
 }
+
+#ifdef MAINMEX
+#include "mexstandalone.h"
+#endif
+
+
