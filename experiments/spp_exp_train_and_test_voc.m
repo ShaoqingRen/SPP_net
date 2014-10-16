@@ -3,9 +3,9 @@ function [res_test, spp_model] = spp_exp_train_and_test_voc(opts)
 
 % -------------------- CONFIG --------------------
 if ~exist('opts', 'var')
-    opts.net_file        = fullfile(pwd, 'data\cnn_model\Zeiler_conv5\Zeiler_conv5');
-    opts.net_def_file    = fullfile(pwd, 'data\cnn_model\Zeiler_conv5\Zeiler_spm_scale224_test_conv5.prototxt');
-    opts.spp_params_def  = fullfile(pwd, 'data\cnn_model\Zeiler_conv5\spp_config');
+    opts.net_file        = fullfile(pwd, 'data','cnn_model','Zeiler_conv5','Zeiler_conv5');
+    opts.net_def_file    = fullfile(pwd, 'data','cnn_model','Zeiler_conv5','Zeiler_spm_scale224_test_conv5.prototxt');
+    opts.spp_params_def  = fullfile(pwd, 'data','cnn_model','Zeiler_conv5','spp_config');
 
     opts.layer                  = 7;
     opts.cache_name             = 'Zeiler_conv5_ft(5s_flip)_fc7';
@@ -44,7 +44,12 @@ diary(diary_file);
 fprintf('Logging output in %s\n', diary_file);
 
 if conf.use_gpu
+    try
    g = gpuDevice(opts.gpu_id); 
+    catch
+        fprintf('no gpuDevice function\n');
+    end
+    
 end
 
 profile clear
@@ -65,7 +70,12 @@ spp_model = ...
 res_test = spp_test(spp_model, opts.imdb_test, opts.roidb_test, opts.feat_cache_test, '', true);
 
 if conf.use_gpu
+    try
    reset(g);
+       catch
+        fprintf('no gpuDevice function\n');
+    end
+
 end
 
 profile viewer
