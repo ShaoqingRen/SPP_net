@@ -99,22 +99,33 @@ function [solver_file, train_net_file, test_net_file, max_iter] = parse_copy_fin
     solver_file = [solver_file, ext];
     
     solver_prototxt_text = textread(solver_file_path, '%[^\n]');
-    train_net_file_pattern = '(?<=train_net[ :]*")[^"]*(?=")';
-    test_net_file_pattern = '(?<=test_net[ :]*")[^"]*(?=")';
-    
-    train_net_file = cellfun(@(x) regexp(x, train_net_file_pattern, 'match'), solver_prototxt_text, 'UniformOutput', false);
-    train_net_file = train_net_file(cellfun(@(x) ~isempty(x), train_net_file, 'UniformOutput', true));
-    if isempty(train_net_file)
-        error('invalid solver file %s \n', solver_file_path);
+    try  % for old caffe
+        train_net_file_pattern = '(?<=train_net[ :]*")[^"]*(?=")';
+        test_net_file_pattern = '(?<=test_net[ :]*")[^"]*(?=")';
+
+        train_net_file = cellfun(@(x) regexp(x, train_net_file_pattern, 'match'), solver_prototxt_text, 'UniformOutput', false);
+        train_net_file = train_net_file(cellfun(@(x) ~isempty(x), train_net_file, 'UniformOutput', true));
+        if isempty(train_net_file)
+            error('invalid solver file %s \n', solver_file_path);
+        end
+        train_net_file = train_net_file{1}{1};
+
+        test_net_file = cellfun(@(x) regexp(x, test_net_file_pattern, 'match'), solver_prototxt_text, 'UniformOutput', false);
+        test_net_file = test_net_file(cellfun(@(x) ~isempty(x), test_net_file, 'UniformOutput', true));
+        if isempty(test_net_file)
+            error('invalid solver file %s \n', solver_file_path);
+        end
+        test_net_file = test_net_file{1}{1};
+    catch  % for new caffe
+        train_test_net_file_pattern = '(?<=net[ :]*")[^"]*(?=")';
+        train_test_net_file_pattern = cellfun(@(x) regexp(x, train_test_net_file_pattern, 'match'), solver_prototxt_text, 'UniformOutput', false);
+        train_test_net_file_pattern = train_test_net_file_pattern(cellfun(@(x) ~isempty(x), train_test_net_file_pattern, 'UniformOutput', true));
+        if isempty(train_test_net_file_pattern)
+            error('invalid solver file %s \n', solver_file_path);
+        end
+        train_net_file = train_test_net_file_pattern{1}{1};
+        test_net_file = train_test_net_file_pattern{1}{1};
     end
-    train_net_file = train_net_file{1}{1};
-    
-    test_net_file = cellfun(@(x) regexp(x, test_net_file_pattern, 'match'), solver_prototxt_text, 'UniformOutput', false);
-    test_net_file = test_net_file(cellfun(@(x) ~isempty(x), test_net_file, 'UniformOutput', true));
-    if isempty(test_net_file)
-        error('invalid solver file %s \n', solver_file_path);
-    end
-    test_net_file = test_net_file{1}{1};
     
     mkdir_if_missing(dest_dir);
     copyfile(fullfile(folder, solver_file), dest_dir);
