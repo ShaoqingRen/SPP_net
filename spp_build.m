@@ -72,4 +72,14 @@ if ~exist('nms_mex')
       -output nms_mex;
 end
 
+% Compile nms_multiclass_mex
+if ~exist('nms_multiclass_mex')
+  fprintf('Compiling nms_multiclass_mex\n');
+
+  mex -outdir bin ...
+      COMPFLAGS="$COMPFLAGS /openmp" ...
+      -largeArrayDims ...
+      nms/nms_multiclass_mex.cpp ...
+      -output nms_multiclass_mex;
+end
 
