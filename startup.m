@@ -34,4 +34,9 @@ mkdir_if_missing(fullfile(curdir, 'cachedir'));
 mkdir_if_missing(fullfile(curdir, 'feat_cache'));
 mkdir_if_missing(fullfile(curdir, 'imdb', 'cache'));
 
+if ~ispc
+    hfile = [matlabroot '/extern/include/matrix.h'];
+    loadlibrary('libmx',hfile)  
+end
+
 fprintf('SPP_net startup done\n');

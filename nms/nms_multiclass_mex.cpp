@@ -53,7 +53,7 @@ void nms(const mxArray *input_boxes, int iScoreIdx, double overlap, const vector
 			T xx2 = std::min(pBoxes[2*nSample + last], pBoxes[2*nSample + it_idx]);
 			T yy2 = std::min(pBoxes[3*nSample + last], pBoxes[3*nSample + it_idx]);
 
-			double w = std::max(0.0, xx2-xx1+1), h = std::max(0.0, yy2-yy1+1);
+			double w = std::max(0.0, (double)xx2-xx1+1), h = std::max(0.0, (double)yy2-yy1+1);
 
 			double ov = w*h / (vArea[last] + vArea[it_idx] - w*h);
 
@@ -77,7 +77,7 @@ void nms(const mxArray *input_boxes, int iScoreIdx, double overlap, const vector
 }
 
 
-void mexFunction(int nlhs, mxArray *plhs[], int nrhs, mxArray *prhs[])
+void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
 	if (nrhs != 2)
 		mexErrMsgTxt("Wrong number of inputs"); 
@@ -135,7 +135,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, mxArray *prhs[])
 
 	vector<int> nPick(nDim_boxes - 4, 0);
 	vector<vector<int> > vPicks(nDim_boxes - 4);
-	plhs[0] = mxCreateCellMatrix_730(nDim_boxes - 4, 1);
+	plhs[0] = mxCreateCellMatrix(nDim_boxes - 4, 1);
 
 #pragma omp parallel for ordered schedule(dynamic)
 	for (int i = 0; i < vPicks.size(); ++i)
