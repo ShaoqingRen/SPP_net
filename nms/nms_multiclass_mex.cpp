@@ -1,6 +1,10 @@
 #include "mex.h"
+#ifdef WIN32
 #include <windows.h>
 #include <tchar.h>
+#else
+#include <algorithm>
+#endif
 #include <vector>
 #include <map>
 #include <omp.h>
@@ -41,21 +45,27 @@ void nms(const mxArray *input_boxes, int iScoreIdx, double overlap, const vector
 		vPick[nPick] = last;
 		nPick += 1;
 
-		for (std::multimap<T, int>::iterator it = scores.begin(); it != scores.end();)
+		for (typename std::multimap<T, int>::iterator it = scores.begin(); it != scores.end();)
 		{
 			int it_idx = it->second;
-			T xx1 = max(pBoxes[0*nSample + last], pBoxes[0*nSample + it_idx]);
-			T yy1 = max(pBoxes[1*nSample + last], pBoxes[1*nSample + it_idx]);
-			T xx2 = min(pBoxes[2*nSample + last], pBoxes[2*nSample + it_idx]);
-			T yy2 = min(pBoxes[3*nSample + last], pBoxes[3*nSample + it_idx]);
+			T xx1 = std::max(pBoxes[0*nSample + last], pBoxes[0*nSample + it_idx]);
+			T yy1 = std::max(pBoxes[1*nSample + last], pBoxes[1*nSample + it_idx]);
+			T xx2 = std::min(pBoxes[2*nSample + last], pBoxes[2*nSample + it_idx]);
+			T yy2 = std::min(pBoxes[3*nSample + last], pBoxes[3*nSample + it_idx]);
 
-			double w = max(0.0, xx2-xx1+1), h = max(0.0, yy2-yy1+1);
+			double w = std::max(0.0, xx2-xx1+1), h = std::max(0.0, yy2-yy1+1);
 
 			double ov = w*h / (vArea[last] + vArea[it_idx] - w*h);
 
 			if (ov > overlap)
 			{
+				#ifdef WIN32
 				it = scores.erase(it);
+                #else
+                typename std::multimap<T, int>::iterator save=it; ++save;
+				scores.erase(it);
+                it=save;
+                #endif
 			}
 			else
 			{
