@@ -1,4 +1,5 @@
 function spp_demo()
+clear mex;
 
 spp_model_file = '.\data\spp_model\VOC2007\spp_model.mat';
 if ~exist(spp_model_file, 'file')
@@ -13,9 +14,9 @@ caffe_net_file     = fullfile(pwd, 'data\cnn_model\Zeiler_conv5\Zeiler_conv5');
 caffe_net_def_file = fullfile(pwd, 'data\cnn_model\Zeiler_conv5\Zeiler_spm_scale224_test_conv5.prototxt');
 
 use_gpu = true;
+gpu_id = 1;
 if use_gpu
-    clear mex;
-    g = gpuDevice(1);
+    gpuDevice(gpu_id);
 end
 
 caffe('init', caffe_net_def_file, caffe_net_file);
@@ -46,5 +47,5 @@ showboxes_new(im, boxes, classes);
 caffe('release');
 
 if use_gpu
-    reset(g);
+    gpuDevice([]);
 end
