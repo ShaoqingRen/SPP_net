@@ -6,7 +6,7 @@ Acknowledgements: a huge thanks to Yangqing Jia for creating Caffe and the BVLC 
 
 ### Introduction
 
-This is a re-implementation of the object detection algorithm described in the ECCV 2014 paper “Spatial Pyramid Pooling in Deep Convolutional Networks for Visual Recognition”. This re-implementation should reproduce the object detection results reported in the paper up to some statistical variance. The models used in the paper are trained/fine-tuned using cuda-convnet, while the model attached with this code is trained/fine-tuned using Caffe, for the ease of code release.
+This is a re-implementation of the object detection algorithm described in the ECCV 2014 paper "Spatial Pyramid Pooling in Deep Convolutional Networks for Visual Recognition". This re-implementation should reproduce the object detection results reported in the paper up to some statistical variance. The models used in the paper are trained/fine-tuned using cuda-convnet, while the model attached with this code is trained/fine-tuned using Caffe, for the ease of code release.
 
 The implementation of image classification training/testing has not been included, but the network configuration files can be found directly in this code.
 
@@ -32,7 +32,7 @@ SPP_net is released under the Simplified BSD License for non-commercial use (ref
 0. **Prerequisites**
   0. MATLAB (tested with 2014a on 64-bit Windows)
   0. Caffe's prerequisites (some function is based our modified caffe, so we provied compiled caffe mex and cpp file for mex wapper), run `external\fetch_caffe_mex_5_5.m` to download
-  1. News: a caffe version which supports spp mex is provided in https://github.com/ShaoqingRen/caffe/tree/SPP_net, this version is forked from [BVLC/caffe](https://github.com/BVLC/caffe) on Oct. 1, 2014. **For the caffe.mex compiled from this caffe code, the Zeiler CNN network with compatible structure (shared in [OneDrive](https://onedrive.live.com/download?resid=4006CBB8476FF777!9723&authkey=!APTWXLD_P7UN6P0&ithint=file%2czip) ), and new prototxts for finetune (in `./model-defs`) should be used.**
+  1. News: a caffe version which supports spp mex is provided in https://github.com/ShaoqingRen/caffe/tree/SPP_net, this version is forked from [BVLC/caffe](https://github.com/BVLC/caffe) on Oct. 1, 2014. **For the caffe.mex compiled from this caffe code, the Zeiler CNN network with compatible structure (shared in [OneDrive](https://onedrive.live.com/download?resid=D7AF52BADBA8A4BC!113&authkey=!AE6EgybdYr7tOVM&ithint=file%2czip) ), and new prototxts for finetune (in `./model-defs`) should be used.**
 0. **Install SPP_net**
   0. Get the SPP_net source code by cloning the repository: `git clone https://github.com/ShaoqingRen/SPP_net.git`
   0. Now change into the SPP_net source code directory
